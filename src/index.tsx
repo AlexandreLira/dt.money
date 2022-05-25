@@ -13,10 +13,18 @@ createServer({
           id: 1,
           title: 'Comprar de mouse',
           amount: 400,
-          type: 0, 
+          type: 'deposit', 
           category: 'Food',
           createdAt: new Date()
-        }
+        },
+        {
+          id: 2,
+          title: 'Comprar de mouse',
+          amount: 400,
+          type: 'withdraw', 
+          category: 'Food',
+          createdAt: new Date()
+        },
       ]
     })
   }
