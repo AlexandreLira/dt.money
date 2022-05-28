@@ -13,18 +13,18 @@ createServer({
       transactions: [
         {
           id: 1,
-          title: 'Comprar de mouse',
-          amount: 400,
+          title: 'Salario',
+          amount: 1200,
           type: 'deposit', 
-          category: 'Food',
-          createdAt: new Date('2022-02-02')
+          category: 'salario',
+          createdAt: new Date('2022-04-13')
         },
         {
           id: 2,
-          title: 'Comprar de mouse',
-          amount: 400,
+          title: 'Quentinha',
+          amount: 15,
           type: 'withdraw', 
-          category: 'Food',
+          category: 'almoço',
           createdAt: new Date('2022-02-02')
         },
       ]

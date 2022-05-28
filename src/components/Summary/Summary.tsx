@@ -1,7 +1,27 @@
 import { Container } from "./summaryStyles";
 import { income, outcome, total } from "../../@share/images/shareImages";
+import { useContext } from "react";
+import { TransactionsContext } from "../../TransactionContext";
+import { formatNumberToCurrency } from "../../utils/functions";
 
 export function Summary(){
+    const { transactions } = useContext(TransactionsContext)
+
+    const summary = transactions.reduce((acc, transaction) => {
+        if(transaction.type === 'deposit'){
+            acc.deposits += transaction.amount
+            acc.total += transaction.amount
+        } else {
+            acc.withdraw -= transaction.amount
+            acc.total -= transaction.amount
+        }
+        return acc
+    }, {
+        deposits: 0,
+        withdraw: 0,
+        total: 0
+    })
+
     return(
         <Container>
             <div>
@@ -9,7 +29,7 @@ export function Summary(){
                     <p>Entradas</p>
                     <img src={income} alt="Entradas"/>
                 </header>
-                <strong>R$500,00</strong>
+                <strong>{formatNumberToCurrency(summary.deposits)}</strong>
             </div>
 
             <div>
@@ -17,7 +37,7 @@ export function Summary(){
                     <p>Saidas</p>
                     <img src={outcome} alt="Saidas"/>
                 </header>
-                <strong>R$-100,00</strong>
+                <strong>{formatNumberToCurrency(summary.withdraw)}</strong>
             </div>
 
             <div className="highlight-background">
@@ -25,7 +45,7 @@ export function Summary(){
                     <p>Total</p>
                     <img src={total} alt="total" />
                 </header>
-                <strong>R$400,00</strong>
+                <strong>{formatNumberToCurrency(summary.total)}</strong>
             </div>
         </Container>
     )

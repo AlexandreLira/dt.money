@@ -1,7 +1,8 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useContext } from 'react';
 import Modal from 'react-modal';
 import { close, income, outcome } from '../../@share/images/shareImages';
 import { api } from '../../services/api';
+import { TransactionsContext, TransactionType } from '../../TransactionContext';
 import { Container,RadioBox,TransactionTypeContainer } from './NewTransactionModalStyles';
 
 interface NewTransactionModalProps {
@@ -9,28 +10,34 @@ interface NewTransactionModalProps {
   onRequestClose: () => void;
 }
 
-type TransactionType = 'deposit' | 'withdraw'
-
 export function NewTransactionModal(props: NewTransactionModalProps) {
   const { isOpen, onRequestClose } = props
 
+  const {createTransaction} = useContext(TransactionsContext)
 
   const [ title, setTitle ] = useState('')
   const [ value, setValue ] = useState(0)
-  const [ categorie, setCategorie ] = useState('')
+  const [ category, setCategory ] = useState('')
   const [ type, setType ] = useState<TransactionType>('deposit')
 
-  function handleCreateNewTransaction(event: FormEvent) {
+  async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault()
 
     const data = {
       title,
-      value,
+      amount: value,
       type,
-      categorie
+      category
     }
 
-    api.post('transactions', data)
+    await createTransaction(data)
+
+    setCategory('')
+    setTitle('')
+    setType('deposit')
+    setValue(0)
+    
+    onRequestClose()
   }
 
   return (
@@ -91,8 +98,8 @@ export function NewTransactionModal(props: NewTransactionModalProps) {
         <input 
           type="text" 
           placeholder="Categoria"
-          value={categorie}
-          onChange={({target}) => setCategorie(target.value)}
+          value={category}
+          onChange={({target}) => setCategory(target.value)}
         />
         <button type="submit">
           Cadastrar
