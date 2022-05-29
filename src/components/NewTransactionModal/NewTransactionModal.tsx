@@ -1,8 +1,7 @@
-import { FormEvent, useState, useContext } from 'react';
+import { FormEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { close, income, outcome } from '../../@share/images/shareImages';
-import { api } from '../../services/api';
-import { TransactionsContext, TransactionType } from '../../TransactionContext';
+import { TransactionType, useTransactions } from '../../hooks/useTransactions';
 import { Container,RadioBox,TransactionTypeContainer } from './NewTransactionModalStyles';
 
 interface NewTransactionModalProps {
@@ -13,15 +12,18 @@ interface NewTransactionModalProps {
 export function NewTransactionModal(props: NewTransactionModalProps) {
   const { isOpen, onRequestClose } = props
 
-  const {createTransaction} = useContext(TransactionsContext)
+  const { createTransaction } = useTransactions()
 
   const [ title, setTitle ] = useState('')
   const [ value, setValue ] = useState(0)
   const [ category, setCategory ] = useState('')
   const [ type, setType ] = useState<TransactionType>('deposit')
 
+  const [ isLoadingNewTransaction, setIsLoadingNewTransaction] = useState<boolean>(true)
+
   async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault()
+    setIsLoadingNewTransaction(true)
 
     const data = {
       title,
@@ -31,12 +33,13 @@ export function NewTransactionModal(props: NewTransactionModalProps) {
     }
 
     await createTransaction(data)
-
+    
     setCategory('')
     setTitle('')
     setType('deposit')
     setValue(0)
     
+    setIsLoadingNewTransaction(false)
     onRequestClose()
   }
 
@@ -101,8 +104,11 @@ export function NewTransactionModal(props: NewTransactionModalProps) {
           value={category}
           onChange={({target}) => setCategory(target.value)}
         />
-        <button type="submit">
-          Cadastrar
+        <button 
+          type="submit"
+          disabled={isLoadingNewTransaction}
+        >
+          {!isLoadingNewTransaction ? 'Cadastrar' : 'cadastrando...'}
         </button>
       </Container>
     </Modal>

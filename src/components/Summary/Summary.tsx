@@ -1,11 +1,12 @@
-import { Container } from "./summaryStyles";
-import { income, outcome, total } from "../../@share/images/shareImages";
-import { useContext } from "react";
-import { TransactionsContext } from "../../TransactionContext";
 import { formatNumberToCurrency } from "../../utils/functions";
+import { useTransactions } from "../../hooks/useTransactions";
+
+import { income, outcome, total } from "../../@share/images/shareImages";
+
+import { Container } from "./summaryStyles";
 
 export function Summary(){
-    const { transactions } = useContext(TransactionsContext)
+    const { transactions } = useTransactions()
 
     const summary = transactions.reduce((acc, transaction) => {
         if(transaction.type === 'deposit'){
